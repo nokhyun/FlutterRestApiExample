@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:exam_app1/Todo/Todo.dart';
+import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
@@ -47,6 +47,7 @@ class TodoPage extends StatefulWidget {
 
 class _TodoPageState extends State<TodoPage> {
   Future<Todo>? todo;
+  String _buttonText = '에헤헤';
 
   @override
   void initState() {
@@ -81,9 +82,23 @@ class _TodoPageState extends State<TodoPage> {
         Text('userId: ${todo.userId}'),
         Text('id: ${todo.id}'),
         Text('title: ${todo.title}'),
-        Text('completed: ${todo.completed}')
+        Text('completed: ${todo.completed}'),
+        Column(
+          children: [
+            TextButton(
+              onPressed: changeText,
+              child: Text(_buttonText),
+            )
+          ],
+        )
       ],
     );
+  }
+
+  void changeText() {
+    setState(() {
+      _buttonText = '에헤헤222';
+    });
   }
 }
 
