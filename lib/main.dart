@@ -34,10 +34,35 @@ class MyApp extends StatelessWidget {
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
       home: const TodoPage(),
+      // home: const ButtonPage(),
     );
   }
 }
 
+class ButtonPage extends StatefulWidget {
+  @override
+  State<ButtonPage> createState() => _ButtonPage();
+}
+
+class _ButtonPage extends State<ButtonPage> {
+  Future<Todo>? todo;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Center(
+            child: TextButton(
+                onPressed: () {
+                  todo = fetchTodo();
+                },
+                child: Text('가져오기')))
+      ],
+    );
+  }
+}
+
+/** 기존 */
 class TodoPage extends StatefulWidget {
   const TodoPage({Key? key}) : super(key: key);
 
@@ -52,24 +77,42 @@ class _TodoPageState extends State<TodoPage> {
   @override
   void initState() {
     super.initState();
-    todo = fetchTodo();
+    // todo = fetchTodo();
   }
 
   @override
   Widget build(BuildContext context) {
+    var body = Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Center(
+          child: FutureBuilder<Todo>(
+              future: todo,
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return buildColumn(snapshot);
+                } else {
+                  return Text('${snapshot.error}');
+                }
+              })),
+      TextButton(onPressed: changeText, child: const Text('데이터 가져오기')),
+    ]);
+
+    // return Scaffold(
+    //     body: Center(
+    //   child: FutureBuilder<Todo>(
+    //     future: todo,
+    //     builder: (context, snapshot) {
+    //       if (snapshot.hasData) {
+    //         return buildColumn(snapshot);
+    //       } else {
+    //         return Text('${snapshot.error}');
+    //       }
+    //     },
+    //   ),
+    // ));
+
     return Scaffold(
-        body: Center(
-      child: FutureBuilder<Todo>(
-        future: todo,
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return buildColumn(snapshot);
-          } else {
-            return Text('${snapshot.error}');
-          }
-        },
-      ),
-    ));
+      body: body,
+    );
   }
 
   Widget buildColumn(AsyncSnapshot<Todo> snapshot) {
@@ -83,14 +126,14 @@ class _TodoPageState extends State<TodoPage> {
         Text('id: ${todo.id}'),
         Text('title: ${todo.title}'),
         Text('completed: ${todo.completed}'),
-        Column(
-          children: [
-            TextButton(
-              onPressed: changeText,
-              child: Text(_buttonText),
-            )
-          ],
-        )
+        // Column(
+        //   children: [
+        //     TextButton(
+        //       onPressed: changeText,
+        //       child: Text(_buttonText),
+        //     )
+        //   ],
+        // )
       ],
     );
   }
@@ -98,6 +141,7 @@ class _TodoPageState extends State<TodoPage> {
   void changeText() {
     setState(() {
       _buttonText = '에헤헤222';
+      todo = fetchTodo();
     });
   }
 }
